@@ -18,64 +18,68 @@ class Batches extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.all(32.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Batches",
-            style: Theme.of(context).textTheme.headline4,
-          ),
-          FutureBuilder(
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () async {
-                        ref.refresh(batchDatabaseProvider);
-                        showLoaderDialog(context);
-                        ref.read(statusProvider.state).state =
-                            await snapshot.data.elementAt(index).data["index"];
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BatchDetailScreen(
-                              batchId:
-                                  snapshot.data.elementAt(index).data["\$id"],
-                              batchmates: snapshot.data
-                                      .elementAt(index)
-                                      .data["users"] ??
-                                  [],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Batches",
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            FutureBuilder(
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () async {
+                          ref.refresh(batchDatabaseProvider);
+                          showLoaderDialog(context);
+                          ref.read(statusProvider.state).state = await snapshot
+                              .data
+                              .elementAt(index)
+                              .data["index"];
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BatchDetailScreen(
+                                batchId:
+                                    snapshot.data.elementAt(index).data["\$id"],
+                                batchmates: snapshot.data
+                                        .elementAt(index)
+                                        .data["users"] ??
+                                    [],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: ListTile(
-                            title: Text(
-                              "Id: ${snapshot.data.elementAt(index).data["\$id"]}",
-                            ),
-                            subtitle: Text(
-                              "Date Created: ${readTimestamp(snapshot.data.elementAt(index).data["\$createdAt"])}",
+                          );
+                        },
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ListTile(
+                              title: Text(
+                                "Id: ${snapshot.data.elementAt(index).data["\$id"]}",
+                              ),
+                              subtitle: Text(
+                                "Date Created: ${readTimestamp(snapshot.data.elementAt(index).data["\$createdAt"])}",
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              } else {
-                return const CupertinoActivityIndicator();
-              }
-            },
-            future: ref.watch(batchDatabaseProvider).getBatchList(),
-          )
-        ],
+                      );
+                    },
+                  );
+                } else {
+                  return const CupertinoActivityIndicator();
+                }
+              },
+              future: ref.watch(batchDatabaseProvider).getBatchList(),
+            )
+          ],
+        ),
       ),
     );
   }

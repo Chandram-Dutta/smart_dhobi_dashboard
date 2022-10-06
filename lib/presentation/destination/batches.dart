@@ -48,6 +48,10 @@ class Batches extends ConsumerWidget {
                               builder: (context) => BatchDetailScreen(
                                 batchId:
                                     snapshot.data.elementAt(index).data["\$id"],
+                                notification: snapshot.data
+                                        .elementAt(index)
+                                        .data["notificaations"] ??
+                                    [],
                                 batchmates: snapshot.data
                                         .elementAt(index)
                                         .data["users"] ??

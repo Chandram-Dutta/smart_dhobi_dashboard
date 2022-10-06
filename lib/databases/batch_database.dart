@@ -62,6 +62,22 @@ class BatchDatabase {
     }
   }
 
+  Future addNotifications(
+      String userId, String batchId, List notifications) async {
+    try {
+      databases.updateDocument(
+        documentId: batchId,
+        collectionId: batchesCollectionId,
+        databaseId: batchDatabaseId,
+        data: {
+          "notifications": notifications,
+        },
+      );
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   Future updateBatchIndex(int index, String batchId) async {
     try {
       databases.updateDocument(
